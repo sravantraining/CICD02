@@ -20,8 +20,8 @@ jobs:
       - checkout
       - run:
           name: Install SonarScanner
-          command: |
-          ls $SONAR_SCANNER_HOME/bin 
+          #command: |
+          # ls $SONAR_SCANNER_HOME/bin 
 workflows:
   deploy_workflow:
     jobs:
