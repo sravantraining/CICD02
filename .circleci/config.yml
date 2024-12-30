@@ -12,7 +12,20 @@ jobs:
       - run:
           name: install dependencies
           command: npm install
+
+  sonarCloud_analysis:
+    docker:
+      - image: circleci/node:latest
+    steps:
+      - checkout
+      - run:
+          name: Install SonarScanner
+          command: |
+          ls $SONAR_SCANNER_HOME/bin 
 workflows:
   deploy_workflow:
     jobs:
       - install_dependencies
+      - sonarCloud_analysis:
+          requires:
+            - install_dependencies
