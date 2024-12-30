@@ -29,6 +29,9 @@ jobs:
       - setup_remote_docker
       - checkout
       - run:
+          name: checking images locally
+          command: docker images
+      - run:
           name: push image to docker hub
           command: |
             echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_UN --password-stdin
