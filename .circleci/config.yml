@@ -28,7 +28,7 @@ jobs:
           name: Trivy Scan
           command: |
             docker pull aquasec/trivy:latest
-            docker run -rm -v /var/run/docker.sock aquasec/trivy:latest --severity HIGH,CRITICAL image $DOCKER_HUB_UN/circlecirepo:latest .
+            docker run --rm -v /var/run/docker.sock aquasec/trivy:latest --severity HIGH,CRITICAL image $DOCKER_HUB_UN/circlecirepo:latest .
       - run:
           name: Checking Docker Images Locally
           command: docker images  # List Docker images
