@@ -1,35 +1,18 @@
-# This config was automatically generated from your source code
-# Stacks detected: cicd:jenkins:.,deps:node:.
 version: 2.1
-orbs:
-  node: circleci/node@5
+
 jobs:
-  test-node:
-    # Install node dependencies and run tests
-    executor: node/default
-    steps:
-      - checkout
-      - node/install-packages:
-          pkg-manager: npm
-      - run:
-          name: Run tests
-          command: npm test --passWithNoTests
-  deploy:
+  
+  install_dependencies:
     # This is an example deploy job, not actually used by the workflow
     docker:
-      - image: cimg/base:stable
+      - image: circleci/node:latest
     steps:
       # Replace this with steps to deploy to users
+      - checkout          
       - run:
-          name: deploy
-          command: '#e.g. ./deploy.sh'
-      - run:
-          name: found jenkins config
-          command: ':'
+          name: install dependencies
+          command: npm install
 workflows:
-  build-and-test:
+  deploy_workflow:
     jobs:
-      - test-node
-    # - deploy:
-    #     requires:
-    #       - test-node
+      - install_dependencies
