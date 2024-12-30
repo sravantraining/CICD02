@@ -1,42 +1,43 @@
 version: 2.1
 
 jobs:
-  
+  # Job to install dependencies
   install_dependencies:
-    # This is an example deploy job, not actually used by the workflow
     docker:
-      - image: circleci/node:latest
+      - image: circleci/node:latest  # Node.js Docker image
     steps:
-      # Replace this with steps to deploy to users
-      - checkout          
+      - checkout
       - run:
-          name: install dependencies
-          command: npm install
+          name: Install dependencies
+          command: npm install  # Command to install node dependencies
 
+  # Job to build and push Docker image to Docker Hub
   build_push_docker_image:
     docker:
-      - image: docker:20.10.7
+      - image: docker:20.10.7  # Docker image
     steps:
-      - setup_remote_docker
-        version: 20.10.7
-        docker_layer_caching: true
+      # Step to setup remote Docker service
+      - setup_remote_docker:
+          version: 20.10.7  # Version of Docker you want to use
+          docker_layer_caching: true  # Enable Docker layer caching for faster builds
       - checkout
       - run:
           name: Build Docker Image
           command: docker build -t $DOCKER_HUB_UN/circlecirepo:latest .
       - run:
-          name: Checking Images locally
-          command: docker images
+          name: Checking Docker Images Locally
+          command: docker images  # List Docker images
       - run:
           name: Push Image to DockerHub
           command: |
             echo $DOCKERHUB_PASSWORD | docker login -u $DOCKER_HUB_UN --password-stdin
             docker push "$DOCKER_HUB_UN/circlecirepo:latest"
-  
+
+# Define workflows
 workflows:
   deploy_workflow:
     jobs:
-      - install_dependencies
-      - build_push_docker_image:
+      - install_dependencies  # Install dependencies first
+      - build_push_docker_image:  # Then build and push Docker image
           requires:
-            - install_dependencies
+            - install_dependencies  # Ensure 'install_dependencies' job completes first
