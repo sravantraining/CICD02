@@ -13,7 +13,7 @@ jobs:
           name: install dependencies
           command: npm install
 
-  build_docker_image:
+  build_push_docker_image:
     docker:
       - image: docker:20.10.7
     steps:
@@ -22,25 +22,17 @@ jobs:
       - run:
           name: Build Docker Image
           command: docker build -t $DOCKER_HUB_UN/circlecirepo:latest .
-  push_dockerhub:
-    docker:
-      - image: docker:20.10.7
-    steps:
-      - setup_remote_docker
-      - checkout
       - run:
-          name: checking images locally
+          name: Checking Images locally
           command: docker images
       - run:
-          name: push image to docker hub
+          name: Push Image to DockerHub
           command: |
-            echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_UN --password-stdin
-            docker push $DOCKER_HUB_UN/circlecirepo:latest
+            echo $DOCKERHUB_PASSWORD | docker login -u $DOCKER_HUB_UN --password-stdin
+            docker push "DOCKER_HUB_UN/circlecirepo:latest"
+  
 workflows:
   deploy_workflow:
     jobs:
       - install_dependencies
-      - build_docker_image
-      - push_dockerhub:
-          requires:
-            - build_docker_image
+      - build_push_docker_image
