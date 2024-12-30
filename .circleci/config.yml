@@ -12,7 +12,7 @@ jobs:
           command: npm install  # Command to install node dependencies
 
   # Job to build and push Docker image to Docker Hub
-  build_push_docker_image:
+  build_scan_push_docker_image:
     docker:
       - image: docker:20.10.7  # Docker image
     steps:
@@ -24,6 +24,11 @@ jobs:
       - run:
           name: Build Docker Image
           command: docker build -t $DOCKER_HUB_UN/circlecirepo:latest .
+      - run:
+          name: Trivy Scan
+          command: |
+            docker pull aquasec/trivy:latest
+            docker run -rm -v /var/run/docker.sock aquasec/trivy:latest --severity HIGH,CRITICAL image $DOCKER_HUB_UN/circlecirepo:latest .
       - run:
           name: Checking Docker Images Locally
           command: docker images  # List Docker images
@@ -38,6 +43,6 @@ workflows:
   deploy_workflow:
     jobs:
       - install_dependencies  # Install dependencies first
-      - build_push_docker_image:  # Then build and push Docker image
+      - build_scan_push_docker_image:  # Then build and push Docker image
           requires:
             - install_dependencies  # Ensure 'install_dependencies' job completes first
