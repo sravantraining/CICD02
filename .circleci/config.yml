@@ -1,3 +1,18 @@
 # This config was automatically generated from your source code
 # Stacks detected: cicd:jenkins:.,deps:node:.
-# empty file
+version: 2.1
+jobs:
+  install_dependencies:
+    docker:
+      - image: circleci/node:latest
+    steps:
+      - checkout
+      - run:
+          name: Install NPM dependencies
+          command: npm install
+
+worflows:
+  version: 2
+  deploy_workflows:
+    jobs:
+      - install_dependencies
